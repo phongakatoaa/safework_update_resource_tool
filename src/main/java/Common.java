@@ -191,7 +191,7 @@ public class Common {
             StringBuilder logStr = new StringBuilder();
             Sheet sheet = workbook.getSheet(sc.getSiteName());
             if (sheet == null) {
-                logStr.append("Error: no sheet found for site").append(sc.getSiteName());
+                logStr.append("Error: no sheet found for site ").append(sc.getSiteName());
             } else {
                 config.getLanguageConfigs().forEach(lc -> {
                     int entry = 0;

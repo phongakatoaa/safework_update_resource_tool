@@ -9,6 +9,10 @@
       <site>berrybros</site>
       <saveLocation>C:\Users\AD\Desktop\site_resources\berrybros</saveLocation>
     </siteConfig>
+    <siteConfig>
+      <site>mta</site>
+      <saveLocation>C:\Users\AD\Desktop\site_resources\mta</saveLocation>
+    </siteConfig>
   </siteConfigs>
   <languageConfigs>
     <languageConfig>

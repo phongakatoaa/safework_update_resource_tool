@@ -143,7 +143,7 @@ public class UpdateSiteLanguageResourcesPane extends MyTabbedPane {
             int confirm = JOptionPane.showConfirmDialog(null, textField, "Enter Site Name",
                     JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                tableModel.addRow(new Object[]{false, textField.getText(), 0, "", "Edit"});
+                tableModel.addRow(new Object[]{textField.getText(), "", "Edit"});
                 config.getSiteConfigs().add(new SiteConfig(textField.getText(), ""));
             }
         });

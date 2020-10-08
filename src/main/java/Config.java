@@ -6,9 +6,8 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import javax.swing.*;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +21,7 @@ public class Config {
     private String lastResourceLocation;
     private String lastLanguageCSVLocation;
     private String lastSiteLanguageXLSXLocation;
+    private String appDirectory;
 
     public Config() {
         languageConfigs = new ArrayList<>();
@@ -30,12 +30,21 @@ public class Config {
         lastResourceLocation = "";
         lastLanguageCSVLocation = "";
         lastSiteLanguageXLSXLocation = "";
+        try {
+            appDirectory = new File(Tool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())
+                    .getParentFile().getAbsolutePath();
+        } catch (URISyntaxException e) {
+            JOptionPane.showMessageDialog(null, "failed to get config path: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            appDirectory = "";
+        }
+        System.out.println("CONFIG_PATH=" + appDirectory + "\\" + CONFIG_FILE);
         load();
     }
 
     public void load() {
         try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(CONFIG_FILE);
+            InputStream inputStream = new FileInputStream(appDirectory + "\\" + CONFIG_FILE);
             SAXBuilder saxBuilder = new SAXBuilder();
             Document configDoc = saxBuilder.build(inputStream);
 
@@ -122,9 +131,12 @@ public class Config {
 
             XMLOutputter output = new XMLOutputter();
             output.setFormat(Format.getPrettyFormat());
-            output.output(configDoc, new FileWriter(CONFIG_FILE));
-        } catch (IOException ignored) {
 
+            FileWriter fileWriter = new FileWriter(new File(appDirectory + "\\" + CONFIG_FILE));
+            output.output(configDoc, fileWriter);
+            fileWriter.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "error saving config: " + e.getMessage());
         }
     }
 

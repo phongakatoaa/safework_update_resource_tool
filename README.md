@@ -6,7 +6,10 @@
 
 ### Use:
 - Navigate to ```target``` folder 
-- Open ```.jar``` file
+- Open ```.jar``` executable
 - Have fun
+
+### Notes:
+- ```.jar``` executable need to be put in the same folder as ```config.xml``` for settings to be read/write
 
 **Author**: Phong Ha
