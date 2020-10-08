@@ -12,6 +12,9 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -42,17 +45,23 @@ public class Common {
         }
     }
 
-    public void exportXML(Document document, String path, StringBuilder log) {
-        XMLOutputter output = new XMLOutputter();
-        output.setFormat(Format.getPrettyFormat().setEncoding("utf-8"));
+    public void exportXML(Document document, String dir, String fileName, StringBuilder log) {
         try {
-            output.output(document, new FileWriter(path));
-            if (log != null) {
-                log.append("Exported resource to ").append(path).append("\n");
+            Path dirPath = Paths.get(dir);
+            if (!Files.exists(dirPath)) {
+                Files.createDirectory(Paths.get(dir));
             }
+            XMLOutputter output = new XMLOutputter();
+            output.setFormat(Format.getPrettyFormat().setEncoding("utf-8"));
+            FileWriter fileWriter = new FileWriter(dir + "\\" + fileName);
+            output.output(document, fileWriter);
+            if (log != null) {
+                log.append("Exported resource to ").append(dir).append("\\").append(fileName).append("\n");
+            }
+            fileWriter.close();
         } catch (IOException e) {
             if (log != null) {
-                log.append("Error: failed to write xml file - ").append(path).append(": ")
+                log.append("Error: failed to write xml file - ").append(dir).append("\\").append(fileName).append(": ")
                         .append(e.getMessage()).append("\n");
             }
         }
@@ -113,6 +122,7 @@ public class Common {
                     res.put(splits[keyCol], splits[valueCol]);
                 }
             }
+            scanner.close();
             return res;
         } catch (Exception e) {
             if (log != null) {
@@ -129,10 +139,10 @@ public class Common {
         String resourceDir = config.getLastResourceLocation();
         config.getLanguageConfigs().forEach(lc -> {
             StringBuilder logStr = new StringBuilder();
-            String resourcePath = resourceDir + "\\" +
-                    config.getLanguageResourceFileName()
-                            .replace("${lang}", lc.getLanguage())
-                            .replace("..", "."); // for default case
+            String fileName = config.getLanguageResourceFileName()
+                    .replace("${lang}", lc.getLanguage())
+                    .replace("..", "."); // for default case
+            String resourcePath = resourceDir + "\\" + fileName;
 
             HashMap<String, String> dictionary = parseCSV(csvPath, 0, lc.getValueColIndex(), logStr);
             Document resource = parseXML(resourcePath, logStr);
@@ -160,7 +170,7 @@ public class Common {
             }
 
             logStr.append("Replaced ").append(entry).append(" entries.\n");
-            exportXML(resource, resourcePath, logStr);
+            exportXML(resource, resourceDir, fileName, logStr);
             logs.put(lc.getLanguage().isEmpty() ? "Default" : lc.getLanguage(), logStr.toString());
         });
         showLogs(logs);
@@ -220,11 +230,18 @@ public class Common {
                                 append(newValue).append("\n");
                     }
                     logStr.append("Replaced ").append(entry).append(" entries.\n");
-                    exportXML(resource, sc.getSaveLocation() + "\\" + resourceFileName, logStr);
+                    exportXML(resource, sc.getSaveLocation(), resourceFileName, logStr);
                 });
             }
             logs.put(sc.getSiteName(), logStr.toString());
         });
+        try {
+            workbook.close();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,
+                    "failed to close xlsx resource: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
         showLogs(logs);
     }
 
