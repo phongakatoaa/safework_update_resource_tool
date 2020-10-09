@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
@@ -115,11 +116,12 @@ public class Common {
             int minNumberOfCol = Math.max(keyCol, valueCol);
             HashMap<String, String> res = new HashMap<>();
             Scanner scanner = new Scanner(new File(path));
+            scanner.nextLine(); //skip header row
             while (scanner.hasNextLine()) {
                 String row = scanner.nextLine();
                 String[] splits = row.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
                 if (splits.length > minNumberOfCol) {
-                    res.put(splits[keyCol], splits[valueCol]);
+                    res.put(removeQuote(splits[keyCol]).trim(), removeQuote(splits[valueCol]).trim());
                 }
             }
             scanner.close();
@@ -156,6 +158,17 @@ public class Common {
                 String newValue = dictionary.get(key);
                 if (valueNode == null || newValue == null) {
                     logStr.append("ERROR: key name {").append(key).append("} not found\n");
+                    Element newDataNode = new Element("data");
+                    newDataNode.setAttribute("name", key);
+                    newDataNode.setAttribute("space", "preserve",
+                            Namespace.XML_NAMESPACE);
+
+                    Element newValueNode = new Element("value");
+                    newValueNode.setText(newValue);
+
+                    newDataNode.addContent(newValueNode);
+                    resource.getRootElement().addContent(newDataNode);
+                    logStr.append("TASK: added new key ").append(key).append("=\"").append(newValue).append("\"\n");
                     continue;
                 }
                 if (valueNode.getText().equals(newValue)) {
@@ -253,5 +266,15 @@ public class Common {
             }
         }
         return null;
+    }
+
+    private String removeQuote(String string) {
+        if (string.charAt(0) == '\"') {
+            string = string.substring(1);
+        }
+        if (string.charAt(string.length() - 1) == '\"') {
+            string = string.substring(0, string.length() - 1);
+        }
+        return string;
     }
 }
