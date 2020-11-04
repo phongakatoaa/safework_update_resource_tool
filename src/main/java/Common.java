@@ -1,7 +1,4 @@
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
@@ -223,7 +220,11 @@ public class Common {
                     while (rowIter.hasNext()) {
                         Row row = rowIter.next();
                         String key = row.getCell(0).getRichStringCellValue().getString();
-                        String newValue = row.getCell(colIndex).getRichStringCellValue().getString();
+                        Cell cell = row.getCell(colIndex);
+                        if (cell == null) {
+                            continue;
+                        }
+                        String newValue = cell.getRichStringCellValue().getString();
                         if (key.isEmpty() || newValue.isEmpty()) {
                             continue;
                         }
