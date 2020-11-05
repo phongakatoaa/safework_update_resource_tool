@@ -5,11 +5,7 @@
 - Generate language resources with overridden key for specific sites
 
 ### Use:
-- Navigate to ```target``` folder 
-- Open ```.jar``` executable
-- Have fun
-
-### Notes:
-- ```.jar``` executable need to be put in the same folder as ```config.xml``` for settings to be read/write
+- Download ```config.xml```, ```start.bat```, ```target/safework_resources_update_tool-1.0-SNAPSHOT``` and put them in the same folder
+- Run ```start.bat```
 
 **Author**: Phong Ha

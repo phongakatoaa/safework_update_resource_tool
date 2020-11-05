@@ -7,6 +7,10 @@
     <groupId>org.example</groupId>
     <artifactId>safework_resources_update_tool</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -71,5 +75,4 @@
             <version>4.1.2</version>
         </dependency>
     </dependencies>
-
 </project>
