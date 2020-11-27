@@ -219,8 +219,12 @@ public class Common {
                     Iterator<Row> rowIter = sheet.rowIterator();
                     while (rowIter.hasNext()) {
                         Row row = rowIter.next();
+                        Cell cell = row.getCell(0);
+                        if (cell == null) {
+                            continue;
+                        }
                         String key = row.getCell(0).getRichStringCellValue().getString();
-                        Cell cell = row.getCell(colIndex);
+                        cell = row.getCell(colIndex);
                         if (cell == null) {
                             continue;
                         }
