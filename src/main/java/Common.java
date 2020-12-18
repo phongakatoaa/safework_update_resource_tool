@@ -266,7 +266,7 @@ public class Common {
     private Element getLanguageValueNode(Document document, String key) {
         Element root = document.getRootElement();
         for (Element child : root.getChildren("data")) {
-            if (child.getAttributeValue("name").equals(key)) {
+            if (child.getAttributeValue("name").toLowerCase().equals(key.toLowerCase())) {
                 return child.getChild("value");
             }
         }
