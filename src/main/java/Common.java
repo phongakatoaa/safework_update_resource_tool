@@ -145,7 +145,13 @@ public class Common {
 
             HashMap<String, String> dictionary = parseCSV(csvPath, 0, lc.getValueColIndex(), logStr);
             Document resource = parseXML(resourcePath, logStr);
-            if (resource == null || dictionary == null) {
+            if (dictionary == null) {
+                logs.put(lc.getLanguage().isEmpty() ? "Default" : lc.getLanguage(), logStr.toString());
+                return;
+            }
+            if (resource == null) {
+                logStr.append("resource not found: ").append(resourcePath);
+                logs.put(lc.getLanguage().isEmpty() ? "Default" : lc.getLanguage(), logStr.toString());
                 return;
             }
 
@@ -274,6 +280,9 @@ public class Common {
     }
 
     private String removeQuote(String string) {
+        if (string.isEmpty()) {
+            return string;
+        }
         if (string.charAt(0) == '\"') {
             string = string.substring(1);
         }
