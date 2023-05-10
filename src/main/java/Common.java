@@ -1,3 +1,4 @@
+import com.opencsv.CSVReader;
 import org.apache.poi.ss.usermodel.*;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -15,11 +16,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Scanner;
 
 public class Common {
     public static final Common instance = new Common();
-    private JFileChooser fileChooser;
+    private final JFileChooser fileChooser;
 
     private Common() {
         this.fileChooser = new JFileChooser();
@@ -47,7 +47,7 @@ public class Common {
         try {
             Path dirPath = Paths.get(dir);
             if (!Files.exists(dirPath)) {
-                Files.createDirectory(Paths.get(dir));
+                Files.createDirectory(dirPath);
             }
             XMLOutputter output = new XMLOutputter();
             output.setFormat(Format.getPrettyFormat().setEncoding("utf-8"));
@@ -83,7 +83,7 @@ public class Common {
 
     private Workbook parseXLSX(String path, StringBuilder log) {
         try {
-            InputStream inputStream = new FileInputStream(path);
+            InputStream inputStream = Files.newInputStream(Paths.get(path));
             return WorkbookFactory.create(inputStream);
         } catch (IOException e) {
             if (log != null) {
@@ -110,18 +110,17 @@ public class Common {
 
     private HashMap<String, String> parseCSV(String path, int keyCol, int valueCol, StringBuilder log) {
         try {
-            int minNumberOfCol = Math.max(keyCol, valueCol);
+            int minNumberOfCol = Math.max(keyCol, valueCol) + 1;
             HashMap<String, String> res = new HashMap<>();
-            Scanner scanner = new Scanner(new File(path));
-            scanner.nextLine(); //skip header row
-            while (scanner.hasNextLine()) {
-                String row = scanner.nextLine();
-                String[] splits = row.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-                if (splits.length > minNumberOfCol) {
-                    res.put(removeQuote(splits[keyCol]).trim(), removeQuote(splits[valueCol]).trim());
+            CSVReader csvReader = new CSVReader(new FileReader(path));
+            String[] values;
+            while ((values = csvReader.readNext()) != null) {
+                if (values.length < minNumberOfCol) {
+                    continue;
                 }
+                res.put(values[keyCol].trim(), values[valueCol].trim());
             }
-            scanner.close();
+            csvReader.close();
             return res;
         } catch (Exception e) {
             if (log != null) {
@@ -272,23 +271,10 @@ public class Common {
     private Element getLanguageValueNode(Document document, String key) {
         Element root = document.getRootElement();
         for (Element child : root.getChildren("data")) {
-            if (child.getAttributeValue("name").toLowerCase().equals(key.toLowerCase())) {
+            if (child.getAttributeValue("name").equalsIgnoreCase(key)) {
                 return child.getChild("value");
             }
         }
         return null;
-    }
-
-    private String removeQuote(String string) {
-        if (string.isEmpty()) {
-            return string;
-        }
-        if (string.charAt(0) == '\"') {
-            string = string.substring(1);
-        }
-        if (string.charAt(string.length() - 1) == '\"') {
-            string = string.substring(0, string.length() - 1);
-        }
-        return string;
     }
 }

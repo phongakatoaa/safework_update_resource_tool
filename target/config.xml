@@ -41,7 +41,7 @@
     </languageConfig>
   </languageConfigs>
   <languageResourceFileName>safework.language.${lang}.resx</languageResourceFileName>
-  <lastResourceLocation>H:\Safework\Main\Source\Safework.WebUI\App_GlobalResources</lastResourceLocation>
-  <lastLanguageCSVLocation>C:\Users\AD\Downloads\Safework Dictionary 7.2.2020.xlsx - Update from 20.07(1).csv</lastLanguageCSVLocation>
+  <lastResourceLocation>C:\Users\ADMIN\Desktop\sw_resources</lastResourceLocation>
+  <lastLanguageCSVLocation>D:\Download\Safework Dictionary 2022.xlsx - Copy of Safework Labels - Final.csv</lastLanguageCSVLocation>
   <lastSiteLanguageXLSXLocation>C:\Users\AD\Downloads\Site Dictionary Override.xlsx</lastSiteLanguageXLSXLocation>
 </config>

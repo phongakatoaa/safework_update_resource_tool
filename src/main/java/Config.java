@@ -6,8 +6,13 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +20,9 @@ public class Config {
     private static final String CONFIG_FILE = "config.xml";
     private static final String DEFAULT_LANGUAGE_RESOURCE_FILENAME = "safework.language.${lang}.resx";
 
-    private List<LanguageConfig> languageConfigs;
+    private final List<LanguageConfig> languageConfigs;
+    private final List<SiteConfig> siteConfigs;
     private String languageResourceFileName;
-    private List<SiteConfig> siteConfigs;
     private String lastResourceLocation;
     private String lastLanguageCSVLocation;
     private String lastSiteLanguageXLSXLocation;
@@ -44,7 +49,7 @@ public class Config {
 
     public void load() {
         try {
-            InputStream inputStream = new FileInputStream(appDirectory + "\\" + CONFIG_FILE);
+            InputStream inputStream = Files.newInputStream(Paths.get(appDirectory + "\\" + CONFIG_FILE));
             SAXBuilder saxBuilder = new SAXBuilder();
             Document configDoc = saxBuilder.build(inputStream);
 

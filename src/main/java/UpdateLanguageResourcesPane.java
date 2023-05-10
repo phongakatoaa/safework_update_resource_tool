@@ -85,19 +85,19 @@ public class UpdateLanguageResourcesPane extends MyTabbedPane {
                 int row = languageConfigTable.rowAtPoint(e.getPoint());
                 if (col == 2) {
                     JTextField textField = new JTextField();
-                    textField.setText(languageConfigTable.getValueAt(row, 2).toString());
+                    textField.setText(languageConfigTable.getValueAt(row, 1).toString());
                     int option = JOptionPane.showConfirmDialog(null, textField, "Set CSV Value Column Index",
                             JOptionPane.YES_NO_OPTION);
                     if (option == JOptionPane.YES_OPTION) {
                         int value = Integer.parseInt(textField.getText());
-                        String language = languageConfigTable.getValueAt(row, 1).toString();
+                        String language = languageConfigTable.getValueAt(row, 0).toString();
                         for (LanguageConfig lc : config.getLanguageConfigs()) {
                             if (lc.getLanguage().equals(language)) {
                                 lc.setValueColIndex(value);
                                 break;
                             }
                         }
-                        languageConfigTable.setValueAt(value, row, 2);
+                        languageConfigTable.setValueAt(value, row, 1);
                     }
                 }
             }
